@@ -1,5 +1,6 @@
 # Deploy hello java app using k8s without docker build command
-## Note: Using initcontainer in Deployment for build docker image
+## Note: 
+This source using initcontainer in Deployment for build docker image
 
 ## Build source code
 ```bash
