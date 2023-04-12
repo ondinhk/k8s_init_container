@@ -1,10 +1,12 @@
 # Deploy hello java app using k8s without docker build command
+## Note: Using initcontainer in Deployment for build docker image
+
 ## Build source code
 ```bash
 ./hello-java-app/mvnw clean install
 ```
 
-## Use this command for start k8sand mount this dir to volume vitural cluster
+## Use this command for start k8s and mount this dir to volume vitural cluster
 ```bash
 minikube start --mount=true --mount-string=$(pwd):/mnt/data
 ```
