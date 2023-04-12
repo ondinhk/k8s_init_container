@@ -1,0 +1,16 @@
+# Use this command for start k8s
+# And dount this dir to volume vitural cluster
+minikube start --mount=true --mount-string=$(pwd):/mnt/data
+
+# Waiting minikube start
+# And run this command
+kubectl apply -f volume.yaml
+kubectl apply -f volume-claim.yaml
+kubectl apply -f deployment.yml
+kubectl apply -f service.yml
+
+# Flow
+# Create volume -> create volume claim -> create deployment -> create service
+
+# How to test
+curl 192.168.49.2:30041/hello

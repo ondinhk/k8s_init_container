@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: hello-java-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: hello-java
+    template:
+        metadata:
+            name: java-app
+            labels:
+                app: hello-java
+        spec:
+            initContainers:
+                - name: docker-build
+                  image: docker
+                  command:
+                      - /bin/sh
+                      - -c
+                      - |
+                          docker build -f /data/hello-java-app/Dockerfile \
+                          --build-arg JAR_FILE=/data/hello-java-app/target/*.jar \
+                          -t hello-java-app .
+                  volumeMounts:
+                      - name: docker-socket
+                        mountPath: /var/run/docker.sock
+                        # Mount source code to init container for build
+                      - name: task-pv-storage
+                        mountPath: /data
+            containers:
+                - name: java-app-container
+                  image: hello-java-app:latest
+                  # Define this attribute to use local images
+                  imagePullPolicy: Never
+                  resources:
+                      limits:
+                          memory: "128Mi"
+                          cpu: "100m"
+                  ports:
+                      - containerPort: 8080
+            volumes:
+                - name: docker-socket
+                  hostPath:
+                      path: /var/run/docker.sock
+                # Define volumes
+                - name: task-pv-storage
+                  persistentVolumeClaim:
+                      claimName: task-pv-claim
